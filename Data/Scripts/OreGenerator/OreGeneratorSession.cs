@@ -18,13 +18,13 @@ namespace Stollie.OreGenerator
     {
         public static List<string> oreNamesAndAmounts = new List<string>();
 
-        public static HashSet<IMyEntity> entityList = new HashSet<IMyEntity>();
-        public static HashSet<IMyCubeGrid> gridsList = new HashSet<IMyCubeGrid>();
-        public static List<IMyConveyorSorter> oreGenerators = new List<IMyConveyorSorter>();
-        public static OreGeneratorSettings oreGeneratorSettings;
-        public static float POWER_REQUIRED;
-        public static List<string> ORE_NAMES_AND_AMOUNTS;
-        public static int SECONDS_BETWEEN_CYCLES;
+        public HashSet<IMyEntity> entityList = new HashSet<IMyEntity>();
+        public HashSet<IMyCubeGrid> gridsList = new HashSet<IMyCubeGrid>();
+        public List<IMyConveyorSorter> oreGenerators = new List<IMyConveyorSorter>();
+        public OreGeneratorSettings oreGeneratorSettings;
+        public float POWER_REQUIRED;
+        public List<string> ORE_NAMES_AND_AMOUNTS;
+        public int SECONDS_BETWEEN_CYCLES;
 
         internal string oreGeneratorSubtypeName = "SmallOreGenerator";
         internal static readonly MyDefinitionId electricityId = new MyDefinitionId(typeof(MyObjectBuilder_GasProperties), "Electricity");
