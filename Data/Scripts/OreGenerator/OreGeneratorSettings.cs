@@ -3,6 +3,7 @@ using Sandbox.ModAPI;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Xml.Serialization;
 
 namespace Stollie.OreGenerator
 {
@@ -11,77 +12,114 @@ namespace Stollie.OreGenerator
     {
         public float powerRequired;
         public int secondsBetweenCycles;
-        public static string[] oreNames;
-        public static List<string> oreNamesAndAmountsList = new List<string>();
-        public List<string> oreNamesAndAmounts = new List<string>();
+        public List<string> oreNamesAndAmountsList = new List<string>();
+
+        [XmlIgnore]
+        public Dictionary<string, int> oreNamesAndAmounts = new Dictionary<string, int>();
+        
         public OreGeneratorSettings()
         {
             powerRequired = 10.0f;
             secondsBetweenCycles = 10;
-            oreNamesAndAmounts = oreNamesAndAmountsList;
+
+            /* We need the ore list ready before loading data from config file.
+             * This is to cover the case of missing a few ores in config file.*/
+            GenerateOreNames();
         }
 
-        public static void GenerateOreNames()
+        private void GenerateOreNames()
         {
-            
+            string[] oreNames;
             MyDefinitionManager.Static.GetOreTypeNames(out oreNames);
             foreach (var ore in oreNames)
             {
                 if (!ore.ToLower().Contains("scrap"))
                 {
                     Log.Info("Found: " + ore);
-                    oreNamesAndAmountsList.Add(10.ToString() + "," + ore);
+                    oreNamesAndAmounts[ore] = 10;
                 }
             }
         }
 
-        public static void Save()
+        public void Save()
         {
-            TextWriter writer = MyAPIGateway.Utilities.WriteFileInWorldStorage("OreGeneratorSettings.xml", typeof(OreGeneratorSettings));
-            writer.Write(MyAPIGateway.Utilities.SerializeToXML(writer));
-            writer.Flush();
-            writer.Close();
+            oreNamesAndAmountsList.Clear();
+            foreach(var pair in oreNamesAndAmounts)
+            {
+                oreNamesAndAmountsList.Add(pair.Value + "," + pair.Key);
+            }
+
+            try
+            {
+                string configcontents = MyAPIGateway.Utilities.SerializeToXML(this);
+
+                TextWriter writer = MyAPIGateway.Utilities.WriteFileInWorldStorage("OreGeneratorSettings.xml", typeof(OreGeneratorSettings));
+                writer.Write(configcontents);
+                writer.Flush();
+                writer.Close();
+            }
+            catch (Exception exc)
+            {
+                Log.Error(string.Format("Logging.WriteLine Error: {0}", exc.ToString()));
+            }
         }
 
-        public static OreGeneratorSettings LoadConfigFile()
+        public void LoadConfigFile()
         {
             // Check if it exists
             if (MyAPIGateway.Utilities.FileExistsInWorldStorage("OreGeneratorSettings.xml", typeof(OreGeneratorSettings)) == true)
             {
                 try
                 {
-                    OreGeneratorSettings defaultConfig = new OreGeneratorSettings();
-                    OreGeneratorSettings config = null;
                     var reader = MyAPIGateway.Utilities.ReadFileInWorldStorage("OreGeneratorSettings.xml", typeof(OreGeneratorSettings));
                     string configcontents = reader.ReadToEnd();
-                    config = MyAPIGateway.Utilities.SerializeFromXML<OreGeneratorSettings>(configcontents);
-                    Log.Info("---- Found Config File ----");
                     reader.Close();
+                    Log.Info("---- Found Config File ----");
+
+                   OreGeneratorSettings config = MyAPIGateway.Utilities.SerializeFromXML<OreGeneratorSettings>(configcontents);
 
                     Log.Info("Pwoer found = " + config.powerRequired);
                     
-                    defaultConfig.powerRequired = config.powerRequired;
-                    defaultConfig.secondsBetweenCycles = config.secondsBetweenCycles;
-                    defaultConfig.oreNamesAndAmounts = config.oreNamesAndAmounts;
-
-                    return defaultConfig;
+                    powerRequired = config.powerRequired;
+                    secondsBetweenCycles = config.secondsBetweenCycles;
+                    oreNamesAndAmountsList = config.oreNamesAndAmountsList;
                 }
                 catch (Exception exc)
                 {
                     Log.Error(string.Format("Logging.WriteLine Error: {0}", exc.ToString()));
                 }
+                
+                foreach (var listItem in oreNamesAndAmountsList)
+                {
+                    string[] pair = listItem.Split(',');
+                    int oreAmount = 0;
+                    if (!int.TryParse(pair[0], out oreAmount))
+                        continue;
+
+                    string oreName = pair[1];
+                    
+                    oreNamesAndAmounts[oreName] = oreAmount;
+                }
+
+                // if you don't want to save back config file right after loading it, add a return statement here;
+                // saving back loaded config is useful in case config file is corrupted, or missing values;
+
+                //return;
             }
 
             // If not make a new one
-            OreGeneratorSettings newDefaultconfig = new OreGeneratorSettings();
             Log.Info("Config File Not Found. Using Default Values");
-            GenerateOreNames();
-            using (var writer = MyAPIGateway.Utilities.WriteFileInWorldStorage("OreGeneratorSettings.xml", typeof(OreGeneratorSettings)))
-            {
-                writer.Write(MyAPIGateway.Utilities.SerializeToXML<OreGeneratorSettings>(newDefaultconfig));
-                writer.Close();
-            }
-            return newDefaultconfig;
+
+            Save();
+            
+            //OreGeneratorSettings newDefaultconfig = new OreGeneratorSettings();
+            //GenerateOreNames();
+            //using (var writer = MyAPIGateway.Utilities.WriteFileInWorldStorage("OreGeneratorSettings.xml", typeof(OreGeneratorSettings)))
+            //{
+            //    writer.Write(MyAPIGateway.Utilities.SerializeToXML<OreGeneratorSettings>(newDefaultconfig));
+            //    writer.Close();
+            //}
+            //return newDefaultconfig;
         }
 
         //public static OreGeneratorSettings LoadConfigFile()

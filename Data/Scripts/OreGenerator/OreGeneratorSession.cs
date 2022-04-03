@@ -23,7 +23,7 @@ namespace Stollie.OreGenerator
         public static List<IMyConveyorSorter> oreGenerators = new List<IMyConveyorSorter>();
         public static OreGeneratorSettings oreGeneratorSettings;
         public static float POWER_REQUIRED;
-        public static List<string> ORE_NAMES_AND_AMOUNTS;
+        public static Dictionary<string, int> ORE_NAMES_AND_AMOUNTS;
         public static int SECONDS_BETWEEN_CYCLES;
 
         internal string oreGeneratorSubtypeName = "SmallOreGenerator";
@@ -42,7 +42,8 @@ namespace Stollie.OreGenerator
             //if (!MyAPIGateway.Multiplayer.IsServer)
             //    return;
 
-            oreGeneratorSettings = OreGeneratorSettings.LoadConfigFile();
+            oreGeneratorSettings = new OreGeneratorSettings();
+            oreGeneratorSettings.LoadConfigFile();
             //var newOres = CheckConfigContent(oreGeneratorSettings.oreNamesAndAmounts);
             //if (newOres)
             //{
@@ -155,9 +156,8 @@ namespace Stollie.OreGenerator
             MyDefinitionManager.Static.GetOreTypeNames(out currentOreNames);
             foreach (var oreNameAndAmount in ORE_NAMES_AND_AMOUNTS)
             {
-                var splitString = oreNameAndAmount.Split(new[] { ',' }, 2);
-                int oreAmount = int.Parse(splitString[0]);
-                var oreName = splitString[1];
+                int oreAmount = oreNameAndAmount.Value;
+                var oreName = oreNameAndAmount.Key;
 
                 var item = new MyObjectBuilder_InventoryItem()
                 {
