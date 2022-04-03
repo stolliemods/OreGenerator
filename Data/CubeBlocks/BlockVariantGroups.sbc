@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <BlockVariantGroups>
+        <BlockVariantGroup>
+            <Id Type="MyObjectBuilder_BlockVariantGroup" Subtype="ConveyorThickGroup" />
+            <Icon>Textures\GUI\Icons\Cubes\OreGeneratorSmall_Icon.dds</Icon>
+            <DisplayName>Ore Generator</DisplayName>
+            <Description>Ore Generator</Description>
+            <Blocks>
+                <Block Type="ConveyorSorter" Subtype="SmallOreGenerator" />                
+            </Blocks>
+        </BlockVariantGroup>       
+    </BlockVariantGroups>
+</Definitions>

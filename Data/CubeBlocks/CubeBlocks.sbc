@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <CubeBlocks>
+		<Definition xsi:type="MyObjectBuilder_ConveyorSorterDefinition">
+			<Id>
+				<TypeId>ConveyorSorter</TypeId>
+				<SubtypeId>SmallOreGenerator</SubtypeId>
+			</Id>
+			<DisplayName>Small Ore Generator</DisplayName>
+			<Icon>Textures\GUI\Icons\Cubes\OreGeneratorSmall_Icon.dds</Icon>
+			<Description>Small Ore Generator</Description>
+			<CubeSize>Large</CubeSize>
+			<BlockTopology>TriangleMesh</BlockTopology>
+			<Size x="1" y="1" z="1" />
+			<ModelOffset x="0" y="0" z="0" />
+			<Model>Models\Cubes\Large\OreGeneratorSmall.mwm</Model>
+			<Components>
+				<Component Subtype="InteriorPlate" Count="30" />
+				<Component Subtype="Construction" Count="35" />
+				<Component Subtype="MetalGrid" Count="4" />
+				<Component Subtype="SmallTube" Count="20" />
+				<Component Subtype="Motor" Count="4" />
+				<Component Subtype="Display" Count="1" />
+				<Component Subtype="Computer" Count="2" />
+				<Component Subtype="Construction" Count="5" />
+				<Component Subtype="InteriorPlate" Count="10" />
+			</Components>
+			<CriticalComponent Subtype="Computer" Index="0" />
+			<MountPoints>
+				<MountPoint Side="Right" StartX="0" StartY="0" EndX="1" EndY="1" />
+				<MountPoint Side="Left" StartX="0" StartY="0" EndX="1" EndY="1" />
+				<MountPoint Side="Top" StartX="0" StartY="0" EndX="1" EndY="1" />
+				<MountPoint Side="Bottom" StartX="0" StartY="0" EndX="1" EndY="1" Default="true" />
+				<MountPoint Side="Front" StartX="0" StartY="0" EndX="1" EndY="1" />
+				<MountPoint Side="Back" StartX="0" StartY="0" EndX="1" EndY="1" />
+			</MountPoints>
+			<BuildProgressModels>
+				<Model BuildPercentUpperBound="0.33" File="Models\Cubes\Large\OreGeneratorSmall_BS1.mwm" />
+				<Model BuildPercentUpperBound="0.66" File="Models\Cubes\Large\OreGeneratorSmall_BS2.mwm" />
+				<Model BuildPercentUpperBound="1.00" File="Models\Cubes\Large\OreGeneratorSmall_BS3.mwm" />
+			</BuildProgressModels>			
+			<InventorySize>
+                <X>1</X>
+                <Y>1</Y>
+                <Z>1</Z>
+            </InventorySize>
+			<BlockPairName>SmallOreGenerator</BlockPairName>
+			<MirroringY>Z</MirroringY>
+			<MirroringZ>Y</MirroringZ>
+			<EdgeType>Light</EdgeType>
+			<BuildTimeSeconds>15</BuildTimeSeconds>
+			<DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
+			<DestroyEffect>BlockDestroyedExplosion_Small</DestroyEffect>
+			<DamagedSound>ParticleHeavyMech</DamagedSound>
+			<DestroySound>WepSmallWarheadExpl</DestroySound>
+			<ResourceSinkGroup>Factory</ResourceSinkGroup>
+            <StandbyPowerConsumption>0.001</StandbyPowerConsumption>
+            <OperationalPowerConsumption>1.0</OperationalPowerConsumption>
+            <InventorySize>
+                <X>1</X>
+                <Y>1</Y>
+                <Z>1</Z>
+            </InventorySize>
+			<EmissiveColorPreset>Default</EmissiveColorPreset>			
+			<DestroyEffect>BlockDestroyedExplosion_Large</DestroyEffect>
+			<DestroySound>WepSmallWarheadExpl</DestroySound>
+			<PCU>50</PCU>
+			<IsAirTight>true</IsAirTight>
+		</Definition>
+		
+	</CubeBlocks>
+</Definitions>

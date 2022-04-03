@@ -1,0 +1,182 @@
+﻿<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B87C5F00-9705-49B1-A51F-829B821FA184}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <NoStandardLibraries>false</NoStandardLibraries>
+    <AssemblyName>ClassLibrary</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>Contracts</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <NoWarn>
+    </NoWarn>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="netstandard">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\netstandard.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoBuf.Net">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\ProtoBuf.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoBuf.Net.Core">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\ProtoBuf.Net.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Sandbox.Common">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\Sandbox.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Sandbox.Game">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\Sandbox.Game.dll</HintPath>
+    </Reference>
+    <Reference Include="Sandbox.Game.XmlSerializers">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\Sandbox.Game.XmlSerializers.dll</HintPath>
+    </Reference>
+    <Reference Include="Sandbox.Graphics">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\Sandbox.Graphics.dll</HintPath>
+    </Reference>
+    <Reference Include="Sandbox.RenderDirect">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\Sandbox.RenderDirect.dll</HintPath>
+    </Reference>
+    <Reference Include="SpaceEngineers">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\SpaceEngineers.exe</HintPath>
+    </Reference>
+    <Reference Include="SpaceEngineers.Game">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\SpaceEngineers.Game.dll</HintPath>
+    </Reference>
+    <Reference Include="SpaceEngineers.ObjectBuilders">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\SpaceEngineers.ObjectBuilders.dll</HintPath>
+    </Reference>
+    <Reference Include="SpaceEngineers.ObjectBuilders.XmlSerializers">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\SpaceEngineers.ObjectBuilders.XmlSerializers.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Collections">
+      <HintPath>..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\System.Collections\v4.0_4.0.0.0__b03f5f7f11d50a3a\System.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Collections.Immutable">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="VRage">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.Ansel">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.Ansel.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.Audio">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.Audio.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.EOS">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.EOS.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.EOS.XmlSerializers">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.EOS.XmlSerializers.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.Game">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.Game.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.Game.XmlSerializers">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.Game.XmlSerializers.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.Input">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.Input.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.Library">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.Library.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.Math">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.Math.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.Math.XmlSerializers">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.Math.XmlSerializers.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.Mod.Io">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.Mod.Io.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.NativeAftermath">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.NativeAftermath.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.NativeWrapper">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.NativeWrapper.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.Network">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.Network.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.Platform.Windows">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.Platform.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.Render">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.Render.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.Render11">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.Render11.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.Scripting">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.Steam">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.Steam.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.UserInterface">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.UserInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.XmlSerializers">
+      <HintPath>F:\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.XmlSerializers.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Data\Scripts\OreGenerator\OreGeneratorSettings.cs" />
+    <Compile Include="Data\Scripts\OreGenerator\Log.cs" />
+    <Compile Include="Data\Scripts\OreGenerator\OreGeneratorBlock.cs" />
+    <Compile Include="Data\Scripts\OreGenerator\OreGeneratorSession.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
+  <ProjectExtensions>
+    <VisualStudio AllowExistingFolder="true" />
+  </ProjectExtensions>
+</Project>
