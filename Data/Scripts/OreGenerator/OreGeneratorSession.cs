@@ -23,7 +23,7 @@ namespace Stollie.OreGenerator
         public List<IMyConveyorSorter> oreGenerators = new List<IMyConveyorSorter>();
         public OreGeneratorSettings oreGeneratorSettings;
         public float POWER_REQUIRED;
-        public List<string> ORE_NAMES_AND_AMOUNTS;
+        public Dictionary<string, int> ORE_NAMES_AND_AMOUNTS = new Dictionary<string, int>();
         public int SECONDS_BETWEEN_CYCLES;
 
         internal string oreGeneratorSubtypeName = "SmallOreGenerator";
