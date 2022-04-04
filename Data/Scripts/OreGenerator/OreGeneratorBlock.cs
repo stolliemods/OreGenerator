@@ -35,8 +35,8 @@ namespace Stollie.OreGenerator
             {
                 Log.Info("*** Block Init Started ***");
                 block = (IMyCubeBlock)Entity;
-                powerRequired = OreGeneratorSession.POWER_REQUIRED;
-                Log.Info("Power Required Value Retrieved: " + OreGeneratorSession.POWER_REQUIRED);
+                powerRequired = OreGeneratorSession.Instance.POWER_REQUIRED;
+                Log.Info("Power Required Value Retrieved: " + OreGeneratorSession.Instance.POWER_REQUIRED);
                 powerSink = block.Components.Get<MyResourceSinkComponent>();
                 powerSink.ClearAllData();
                 if ((block as IMyFunctionalBlock).Enabled)
@@ -97,7 +97,7 @@ namespace Stollie.OreGenerator
         {
             Log.Info("*** Enable Change Started ***");
             powerSink.ClearAllData();
-            powerRequired = OreGeneratorSession.POWER_REQUIRED;
+            powerRequired = OreGeneratorSession.Instance.POWER_REQUIRED;
             if ((block as IMyFunctionalBlock).Enabled)
             {
                 //powerSink.SetInputFromDistributor(electricityId, powerRequired, false);
