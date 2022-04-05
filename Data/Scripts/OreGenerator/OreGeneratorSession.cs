@@ -37,34 +37,23 @@ namespace Stollie.OreGenerator
         public override void LoadData()
         {
             Instance = this;
-            Log.Info("*** BeforeStart Initalization Started *** ");
 
-            //if (!MyAPIGateway.Multiplayer.IsServer)
-            //    return;
+            if (!MyAPIGateway.Session.IsServer)
+                return;
+            
+            Log.Info("*** Session Load Data Initalization Started *** ");
 
             oreGeneratorSettings = new OreGeneratorSettings();
             oreGeneratorSettings.LoadConfigFile();
-            //var newOres = CheckConfigContent(oreGeneratorSettings.oreNamesAndAmounts);
-            //if (newOres)
-            //{
-            //    Log.Info("Found new ores = " + newOres);
-            //    MyAPIGateway.Utilities.DeleteFileInWorldStorage("OreGeneratorSettings.xml", typeof(OreGeneratorSettings));
-
-            //    // Generate a new config file to grab new ores
-            //    oreGeneratorSettings = OreGeneratorSettings.LoadConfigFile();
-            //    ORE_NAMES_AND_AMOUNTS = oreGeneratorSettings.oreNamesAndAmounts;
-            //    POWER_REQUIRED = oreGeneratorSettings.powerRequired;
-            //    SECONDS_BETWEEN_CYCLES = oreGeneratorSettings.secondsBetweenCycles;
-            //}
-
-            POWER_REQUIRED = oreGeneratorSettings.powerRequired;
+            MyAPIGateway.Utilities.GetVariable("PowerRequired", out POWER_REQUIRED);
+            
+            //POWER_REQUIRED = oreGeneratorSettings.powerRequired;
             ORE_NAMES_AND_AMOUNTS = oreGeneratorSettings.oreNamesAndAmounts;
             SECONDS_BETWEEN_CYCLES = oreGeneratorSettings.secondsBetweenCycles;
 
-            Log.Info("---- Power Required: " + POWER_REQUIRED + " ----");
-            Log.Info("---- SecondsBetweenCycles: " + SECONDS_BETWEEN_CYCLES + " ----");
-           
-            Log.Info("*** BeforeStart Initalization Finished *** ");
+            Log.Info("Session Load Data Power Required: " + POWER_REQUIRED + "");
+            Log.Info("Session Load Data SecondsBetweenCycles: " + SECONDS_BETWEEN_CYCLES + "");
+            Log.Info("*** Session Load Data Initalization Finished *** ");
             Log.Info("");
         }
       
@@ -72,9 +61,6 @@ namespace Stollie.OreGenerator
         {
             if (MyAPIGateway.Session == null)
                 return;
-
-            //if (!MyAPIGateway.Multiplayer.IsServer)
-            //    return;
 
             if (!initalized)
             {
@@ -130,11 +116,11 @@ namespace Stollie.OreGenerator
 
                 MyAPIGateway.Entities.OnEntityAdd += EntityAdded;
                 MyAPIGateway.Entities.OnEntityRemove += EntityRemoved;
-                Log.Info("---- Ticks between spawns: " + ticksBetweenSpawns + " ----");
-                Log.Info("---- Found " + entityList.Count + " Entities ----");
-                Log.Info("---- Found " + gridsList.Count + " Grids ----");
-                Log.Info("---- Found " + oreGenerators.Count + " Ore Generators ----");
-                Log.Info("---- Found " + ORE_NAMES_AND_AMOUNTS.Count + " Ores in Config File ---- ");
+                Log.Info("Ticks between spawns: " + ticksBetweenSpawns + "");
+                Log.Info("Found " + entityList.Count + " Entities");
+                Log.Info("Found " + gridsList.Count + " Grids");
+                Log.Info("Found " + oreGenerators.Count + " Ore Generators");
+                Log.Info("Found " + ORE_NAMES_AND_AMOUNTS.Count + " Ores in Config File ");
                 Log.Info("*** Session Initilization Complete ***");
                 Log.Info("");
             }
@@ -150,7 +136,7 @@ namespace Stollie.OreGenerator
         public void GenerateOre()
         {
             //Log.Info("");
-            //Log.Info("---- Execute ----");
+            //Log.Info("Execute");
             oreSpawnTimer = 0;
             string[] currentOreNames;
             MyDefinitionManager.Static.GetOreTypeNames(out currentOreNames);
@@ -182,35 +168,9 @@ namespace Stollie.OreGenerator
                     }
                 }
             }
-            //Log.Info("---- End of Ore Generation Loop ----");
+            //Log.Info("End of Ore Generation Loop");
             //Log.Info("");
         }
-
-        public static bool CheckConfigContent(List<string> oreNamesAndAmounts)
-        {
-            string[] oreNames;
-            List<string> oreNamesSplit = new List<string>();
-
-            MyDefinitionManager.Static.GetOreTypeNames(out oreNames);
-            foreach (var oreNameAndAmount in oreNamesAndAmounts)
-            {
-                var splitString = oreNameAndAmount.Split(new[] { ',' }, 2);
-                var oreName = splitString[1];
-                oreNamesSplit.Add(oreName);
-            }
-
-            foreach (var ore in oreNames)
-            {
-                if (!oreNamesSplit.Contains(ore) && !ore.ToLower().Contains("scrap"))
-                {
-                    Log.Info(ore + " not found");
-                    MyVisualScriptLogicProvider.SendChatMessage("New Ores Found - Re-generating Settings File!", "OreGeneratorMod", 0, "Red");
-                    return true;
-                }
-            }
-            return false;
-        }
-
         private void Utilities_MessageEntered(string messageText, ref bool sendToOthers)
         {
             sendToOthers = false;
@@ -252,7 +212,6 @@ namespace Stollie.OreGenerator
             
             
         }
-
 
         public void EntityAdded(IMyEntity entity)
         {
