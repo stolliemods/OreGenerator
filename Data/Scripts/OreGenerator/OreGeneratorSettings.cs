@@ -1,4 +1,5 @@
 ﻿using Sandbox.Definitions;
+using Sandbox.Game;
 using Sandbox.ModAPI;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace Stollie.OreGenerator
         
         public OreGeneratorSettings()
         {
-            powerRequired = 10.0f;
+            powerRequired = 5.0f;
             secondsBetweenCycles = 10;
 
             /* We need the ore list ready before loading data from config file.
@@ -35,32 +36,9 @@ namespace Stollie.OreGenerator
             {
                 if (!ore.ToLower().Contains("scrap"))
                 {
-                    Log.Info("Found: " + ore);
+                    //Log.Info("Found: " + ore);
                     oreNamesAndAmounts[ore] = 10;
                 }
-            }
-        }
-
-        public void Save()
-        {
-            oreNamesAndAmountsList.Clear();
-            foreach(var pair in oreNamesAndAmounts)
-            {
-                oreNamesAndAmountsList.Add(pair.Value + "," + pair.Key);
-            }
-
-            try
-            {
-                string configcontents = MyAPIGateway.Utilities.SerializeToXML(this);
-
-                TextWriter writer = MyAPIGateway.Utilities.WriteFileInWorldStorage("OreGeneratorSettings.xml", typeof(OreGeneratorSettings));
-                writer.Write(configcontents);
-                writer.Flush();
-                writer.Close();
-            }
-            catch (Exception exc)
-            {
-                Log.Error(string.Format("Logging.WriteLine Error: {0}", exc.ToString()));
             }
         }
 
@@ -74,13 +52,12 @@ namespace Stollie.OreGenerator
                     var reader = MyAPIGateway.Utilities.ReadFileInWorldStorage("OreGeneratorSettings.xml", typeof(OreGeneratorSettings));
                     string configcontents = reader.ReadToEnd();
                     reader.Close();
-                    Log.Info("---- Found Config File ----");
+                    Log.Info("Found Existing Config File");
 
-                   OreGeneratorSettings config = MyAPIGateway.Utilities.SerializeFromXML<OreGeneratorSettings>(configcontents);
-
-                    Log.Info("Pwoer found = " + config.powerRequired);
-                    
-                    powerRequired = config.powerRequired;
+                    OreGeneratorSettings config = MyAPIGateway.Utilities.SerializeFromXML<OreGeneratorSettings>(configcontents);
+                    Log.Info("PowerRequired value found in config file: " + config.powerRequired);
+                    MyAPIGateway.Utilities.SetVariable("PowerRequired", config.powerRequired);
+                    //powerRequired = config.powerRequired;
                     secondsBetweenCycles = config.secondsBetweenCycles;
                     oreNamesAndAmountsList = config.oreNamesAndAmountsList;
                 }
@@ -104,56 +81,35 @@ namespace Stollie.OreGenerator
                 // if you don't want to save back config file right after loading it, add a return statement here;
                 // saving back loaded config is useful in case config file is corrupted, or missing values;
 
-                //return;
+                return;
             }
 
             // If not make a new one
             Log.Info("Config File Not Found. Using Default Values");
-
             Save();
-            
-            //OreGeneratorSettings newDefaultconfig = new OreGeneratorSettings();
-            //GenerateOreNames();
-            //using (var writer = MyAPIGateway.Utilities.WriteFileInWorldStorage("OreGeneratorSettings.xml", typeof(OreGeneratorSettings)))
-            //{
-            //    writer.Write(MyAPIGateway.Utilities.SerializeToXML<OreGeneratorSettings>(newDefaultconfig));
-            //    writer.Close();
-            //}
-            //return newDefaultconfig;
         }
 
-        //public static OreGeneratorSettings LoadConfigFile()
-        //{
-        //    // Check if it exists
-        //    if (MyAPIGateway.Utilities.FileExistsInLocalStorage("OreGeneratorSettings.xml", typeof(OreGeneratorSettings)) == true)
-        //    {
-        //        try
-        //        {
-        //            OreGeneratorSettings config = null;
-        //            var reader = MyAPIGateway.Utilities.ReadFileInLocalStorage("OreGeneratorSettings.xml", typeof(OreGeneratorSettings));
+        public void Save()
+        {
+            oreNamesAndAmountsList.Clear();
+            foreach (var pair in oreNamesAndAmounts)
+            {
+                oreNamesAndAmountsList.Add(pair.Value + "," + pair.Key);
+            }
 
-        //            string configcontents = reader.ReadToEnd();
-        //            config = MyAPIGateway.Utilities.SerializeFromXML<OreGeneratorSettings>(configcontents);
-        //            Log.Info("Found Config File" + reader.ToString());
-        //            reader.Close();
-        //            return config;
-        //        }
-        //        catch (Exception exc)
-        //        {
-        //            Log.Error(string.Format("Logging.WriteLine Error: {0}", exc.ToString()));
-        //        }
-        //    }
+            try
+            {
+                string configcontents = MyAPIGateway.Utilities.SerializeToXML(this);
 
-        //    // If not make a new one
-        //    OreGeneratorSettings defaultconfig = new OreGeneratorSettings();
-        //    Log.Info("Config File Not Found. Using Default Values");
-        //    GenerateOreNames();
-        //    using (var writer = MyAPIGateway.Utilities.WriteFileInLocalStorage("OreGeneratorSettings.xml", typeof(OreGeneratorSettings)))
-        //    {
-        //        writer.Write(MyAPIGateway.Utilities.SerializeToXML<OreGeneratorSettings>(defaultconfig));
-        //        writer.Close();
-        //    }
-        //    return defaultconfig;
-        //}
+                TextWriter writer = MyAPIGateway.Utilities.WriteFileInWorldStorage("OreGeneratorSettings.xml", typeof(OreGeneratorSettings));
+                writer.Write(configcontents);
+                writer.Flush();
+                writer.Close();
+            }
+            catch (Exception exc)
+            {
+                Log.Error(string.Format("Logging.WriteLine Error: {0}", exc.ToString()));
+            }
+        }
     }
 }

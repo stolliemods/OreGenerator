@@ -27,7 +27,7 @@ namespace Stollie.OreGenerator
         private int animationMovementLoop = 0;
         internal static readonly MyDefinitionId electricityId = new MyDefinitionId(typeof(MyObjectBuilder_GasProperties), "Electricity");
         private static float powerRequired = 0.0f;
-        private MyResourceSinkComponent powerSink;
+        private bool initalized = false;
 
         public override void Init(MyObjectBuilder_EntityBase objectBuilder)
         {
@@ -35,38 +35,58 @@ namespace Stollie.OreGenerator
             {
                 Log.Info("*** Block Init Started ***");
                 block = (IMyCubeBlock)Entity;
-                powerRequired = OreGeneratorSession.Instance.POWER_REQUIRED;
-                Log.Info("Power Required Value Retrieved: " + OreGeneratorSession.Instance.POWER_REQUIRED);
-                powerSink = block.Components.Get<MyResourceSinkComponent>();
-                powerSink.ClearAllData();
-                if ((block as IMyFunctionalBlock).Enabled)
-                {
-                    //powerSink.SetInputFromDistributor(electricityId, powerRequired, false);
-                    powerSink.SetMaxRequiredInputByType(electricityId, powerRequired);
-                    powerSink.SetRequiredInputFuncByType(electricityId, () => powerRequired);
-                }
-                if (!(block as IMyFunctionalBlock).Enabled)
-                {
-                    //powerSink.SetInputFromDistributor(electricityId, 0.0f, false);
-                    powerSink.SetMaxRequiredInputByType(electricityId, 0.0f);
-                    powerSink.SetRequiredInputFuncByType(electricityId, () => 0.0f);
-                }
-                //powerSink.Update();
-
-                (block as IMyTerminalBlock).AppendingCustomInfo += OreGeneratorBlock_AppendingCustomInfo;
-                (block as IMyFunctionalBlock).EnabledChanged += OreGeneratorBlock_EnabledChanged;
-                NeedsUpdate = MyEntityUpdateEnum.EACH_FRAME | MyEntityUpdateEnum.EACH_FRAME;
-
-                Log.Info("Block Enabled: " + (block as IMyFunctionalBlock).Enabled + " - Config Power Required: " + powerRequired);
-                Log.Info("Block Init Current Input: " + powerSink.CurrentInputByType(electricityId).ToString());
-                Log.Info("Block Init Req Input: " + powerSink.RequiredInputByType(electricityId).ToString());
-                Log.Info("Block Init Max Req Input: " + powerSink.MaxRequiredInputByType(electricityId).ToString());
+                MyAPIGateway.Utilities.GetVariable("PowerRequired", out powerRequired);
+                
+                Log.Info("Block Init Power Required Value Retrieved from Session Class: " + OreGeneratorSession.Instance.POWER_REQUIRED + "");
+                NeedsUpdate = MyEntityUpdateEnum.EACH_FRAME | MyEntityUpdateEnum.BEFORE_NEXT_FRAME;
                 Log.Info("*** Block Init Complete ***");
                 Log.Info("");
             }
             catch (Exception e)
             {
                 MyVisualScriptLogicProvider.SendChatMessage("Block Init Error: " + e.Message);
+            }
+        }
+
+        public void Initalize()
+        {
+            Log.Info("*** Initial Block Power Application Started ***");
+
+            var powerSink = Entity.Components.Get<MyResourceSinkComponent>();
+            if(powerSink != null)
+            {
+                powerSink.SetRequiredInputFuncByType(MyResourceDistributorComponent.ElectricityId, ComputePowerRequired);
+                powerSink.SetRequiredInputByType(MyResourceDistributorComponent.ElectricityId, powerRequired);
+                powerSink.SetMaxRequiredInputByType(MyResourceDistributorComponent.ElectricityId, powerRequired);
+                powerSink.Update();
+            }
+
+            Log.Info("Block Enabled: " + (block as IMyFunctionalBlock).Enabled + " - Config Power Required: " + powerRequired);
+            Log.Info("Current Input: " + powerSink.CurrentInputByType(electricityId).ToString());
+            Log.Info("Req Input: " + powerSink.RequiredInputByType(electricityId).ToString());
+            Log.Info("Max Req Input: " + powerSink.MaxRequiredInputByType(electricityId).ToString());
+            Log.Info("*** Initial Block Power Application Finished ***");
+            Log.Info("");
+
+            (block as IMyTerminalBlock).AppendingCustomInfo += OreGeneratorBlock_AppendingCustomInfo;
+            (block as IMyFunctionalBlock).EnabledChanged += OreGeneratorBlock_EnabledChanged;
+            MyAPIGateway.Utilities.MessageEntered += Utilities_MessageEntered;
+        }
+        private float ComputePowerRequired()
+        {
+            if (!(block as IMyFunctionalBlock).Enabled || !(block as IMyFunctionalBlock).IsFunctional)
+                return 0f;
+
+            return powerRequired;
+        }
+
+        private void Utilities_MessageEntered(string messageText, ref bool sendToOthers)
+        {
+            sendToOthers = false;
+            if (messageText == "c")
+            {
+                MyVisualScriptLogicProvider.SendChatMessage("Session PowerReq: " + powerRequired);
+                MyVisualScriptLogicProvider.SendChatMessage("Block PowerReq Variable: " + powerRequired);
             }
         }
 
@@ -77,12 +97,24 @@ namespace Stollie.OreGenerator
                 if (MyAPIGateway.Session == null)
                     return;
 
+                if (!initalized)
+                {
+                    Initalize();
+                    initalized = true;
+                }
+
+                (block as IMyTerminalBlock).RefreshCustomInfo();
+
+                if (MyAPIGateway.Utilities.IsDedicated)
+                    return;
+
+                var powerSink = Entity.Components.Get<MyResourceSinkComponent>();
+
                 // Animation
                 if (block.IsWorking && powerSink.IsPowerAvailable(electricityId, powerRequired))
                     MoveOrb();
 
                 SetEmissives();
-                (block as IMyTerminalBlock).RefreshCustomInfo();
             }
             catch (Exception e)
             {
@@ -96,21 +128,9 @@ namespace Stollie.OreGenerator
         private void OreGeneratorBlock_EnabledChanged(IMyTerminalBlock block)
         {
             Log.Info("*** Enable Change Started ***");
-            powerSink.ClearAllData();
-            powerRequired = OreGeneratorSession.Instance.POWER_REQUIRED;
-            if ((block as IMyFunctionalBlock).Enabled)
-            {
-                //powerSink.SetInputFromDistributor(electricityId, powerRequired, false);
-                powerSink.SetMaxRequiredInputByType(electricityId, powerRequired);
-                powerSink.SetRequiredInputFuncByType(electricityId, () => powerRequired);
-            }
-            if (!(block as IMyFunctionalBlock).Enabled)
-            {
-                //powerSink.SetInputFromDistributor(electricityId, 0.0f, false);
-                powerSink.SetMaxRequiredInputByType(electricityId, 0.0f);
-                powerSink.SetRequiredInputFuncByType(electricityId, () => 0.0f);
-            }
-            //powerSink.Update();
+
+            var powerSink = Entity.Components.Get<MyResourceSinkComponent>(); 
+            powerSink.Update();
 
             Log.Info("Block Enabled: " + (block as IMyFunctionalBlock).Enabled + " - Config Power Required: " + powerRequired);
             Log.Info("Current Input: " + powerSink.CurrentInputByType(electricityId).ToString());
@@ -125,6 +145,7 @@ namespace Stollie.OreGenerator
             MyResourceDistributorComponent distributor = (MyResourceDistributorComponent)block.CubeGrid.ResourceDistributor;
             var gridPowerState = distributor.ResourceStateByType(MyResourceDistributorComponent.ElectricityId);
             var orbSubpart = block.GetSubpart("orb");
+            var powerSink = Entity.Components.Get<MyResourceSinkComponent>();
 
             if (block.IsWorking && powerSink.IsPowerAvailable(electricityId, powerRequired))
             {
@@ -174,7 +195,7 @@ namespace Stollie.OreGenerator
         {
             MyResourceDistributorComponent distributor = (MyResourceDistributorComponent)block.CubeGrid.ResourceDistributor;
             var gridPowerState = distributor.ResourceStateByType(MyResourceDistributorComponent.ElectricityId);
-
+            var powerSink = Entity.Components.Get<MyResourceSinkComponent>();
             stringBuilder.Clear();
             if (block.IsWorking && powerSink.IsPowerAvailable(electricityId, powerRequired))
             {
@@ -197,6 +218,7 @@ namespace Stollie.OreGenerator
         {
             (block as IMyTerminalBlock).AppendingCustomInfo -= OreGeneratorBlock_AppendingCustomInfo;
             (block as IMyFunctionalBlock).EnabledChanged -= OreGeneratorBlock_EnabledChanged;
+            MyAPIGateway.Utilities.MessageEntered -= Utilities_MessageEntered;
         }
     }
 }
