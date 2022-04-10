@@ -38,9 +38,9 @@ namespace Stollie.OreGenerator
         {
             Instance = this;
 
-            if (!MyAPIGateway.Session.IsServer)
+            if (!MyAPIGateway.Multiplayer.IsServer || MyAPIGateway.Session.OnlineMode != MyOnlineModeEnum.OFFLINE)
                 return;
-            
+
             Log.Info("*** Session Load Data Initalization Started *** ");
 
             oreGeneratorSettings = new OreGeneratorSettings();

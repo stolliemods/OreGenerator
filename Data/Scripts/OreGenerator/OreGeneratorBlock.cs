@@ -103,6 +103,11 @@ namespace Stollie.OreGenerator
                     initalized = true;
                 }
 
+                (block as IMyTerminalBlock).RefreshCustomInfo();
+
+                if (MyAPIGateway.Utilities.IsDedicated)
+                    return;
+
                 var powerSink = Entity.Components.Get<MyResourceSinkComponent>();
 
                 // Animation
@@ -110,7 +115,6 @@ namespace Stollie.OreGenerator
                     MoveOrb();
 
                 SetEmissives();
-                (block as IMyTerminalBlock).RefreshCustomInfo();
             }
             catch (Exception e)
             {
