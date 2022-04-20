@@ -13,10 +13,10 @@ namespace Stollie.OreGenerator
     {
         public float powerRequired;
         public int secondsBetweenCycles;
-        public List<string> oreNamesAndAmountsList = new List<string>();
+        public List<string> oreNamesAndAmounts = new List<string>();
 
         [XmlIgnore]
-        public Dictionary<string, int> oreNamesAndAmounts = new Dictionary<string, int>();
+        public Dictionary<string, int> oreNamesAndAmountsDict = new Dictionary<string, int>();
         
         public OreGeneratorSettings()
         {
@@ -37,7 +37,7 @@ namespace Stollie.OreGenerator
                 if (!ore.ToLower().Contains("scrap"))
                 {
                     //Log.Info("Found: " + ore);
-                    oreNamesAndAmounts[ore] = 10;
+                    oreNamesAndAmountsDict[ore] = 10;
                 }
             }
         }
@@ -59,14 +59,14 @@ namespace Stollie.OreGenerator
                     MyAPIGateway.Utilities.SetVariable("PowerRequired", config.powerRequired);
                     //powerRequired = config.powerRequired;
                     secondsBetweenCycles = config.secondsBetweenCycles;
-                    oreNamesAndAmountsList = config.oreNamesAndAmountsList;
+                    oreNamesAndAmounts = config.oreNamesAndAmounts;
                 }
                 catch (Exception exc)
                 {
                     Log.Error(string.Format("Logging.WriteLine Error: {0}", exc.ToString()));
                 }
                 
-                foreach (var listItem in oreNamesAndAmountsList)
+                foreach (var listItem in oreNamesAndAmounts)
                 {
                     string[] pair = listItem.Split(',');
                     int oreAmount = 0;
@@ -75,7 +75,7 @@ namespace Stollie.OreGenerator
 
                     string oreName = pair[1];
                     
-                    oreNamesAndAmounts[oreName] = oreAmount;
+                    oreNamesAndAmountsDict[oreName] = oreAmount;
                 }
 
                 // if you don't want to save back config file right after loading it, add a return statement here;
@@ -91,10 +91,10 @@ namespace Stollie.OreGenerator
 
         public void Save()
         {
-            oreNamesAndAmountsList.Clear();
-            foreach (var pair in oreNamesAndAmounts)
+            oreNamesAndAmounts.Clear();
+            foreach (var pair in oreNamesAndAmountsDict)
             {
-                oreNamesAndAmountsList.Add(pair.Value + "," + pair.Key);
+                oreNamesAndAmounts.Add(pair.Value + "," + pair.Key);
             }
 
             try

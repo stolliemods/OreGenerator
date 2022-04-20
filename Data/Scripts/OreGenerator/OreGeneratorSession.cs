@@ -27,7 +27,7 @@ namespace Stollie.OreGenerator
         public int SECONDS_BETWEEN_CYCLES;
 
         internal string oreGeneratorSubtypeName = "SmallOreGenerator";
-        internal static readonly MyDefinitionId electricityId = new MyDefinitionId(typeof(MyObjectBuilder_GasProperties), "Electricity");
+        internal static readonly MyDefinitionId electricityId = MyResourceDistributorComponent.ElectricityId;
         private int oreSpawnTimer = 0;
         private long ticksBetweenSpawns = 0; 
         internal bool initalized = false;
@@ -38,22 +38,26 @@ namespace Stollie.OreGenerator
         {
             Instance = this;
 
-            if (!MyAPIGateway.Multiplayer.IsServer || MyAPIGateway.Session.OnlineMode != MyOnlineModeEnum.OFFLINE)
+            Log.Info("*** Load Data STARTED *** ");
+
+            // If you're not the server OR the game mode is not OFFLINE don't run this.
+            if (!MyAPIGateway.Multiplayer.IsServer)
                 return;
 
-            Log.Info("*** Session Load Data Initalization Started *** ");
+            Log.Info("Loading Config File on Server");
 
             oreGeneratorSettings = new OreGeneratorSettings();
             oreGeneratorSettings.LoadConfigFile();
+
             MyAPIGateway.Utilities.GetVariable("PowerRequired", out POWER_REQUIRED);
             
             //POWER_REQUIRED = oreGeneratorSettings.powerRequired;
-            ORE_NAMES_AND_AMOUNTS = oreGeneratorSettings.oreNamesAndAmounts;
+            ORE_NAMES_AND_AMOUNTS = oreGeneratorSettings.oreNamesAndAmountsDict;
             SECONDS_BETWEEN_CYCLES = oreGeneratorSettings.secondsBetweenCycles;
 
             Log.Info("Session Load Data Power Required: " + POWER_REQUIRED + "");
             Log.Info("Session Load Data SecondsBetweenCycles: " + SECONDS_BETWEEN_CYCLES + "");
-            Log.Info("*** Session Load Data Initalization Finished *** ");
+            Log.Info("*** Load Data ENDED *** ");
             Log.Info("");
         }
       
@@ -79,7 +83,7 @@ namespace Stollie.OreGenerator
         {
             try
             {
-                Log.Info("*** Session Initilization Started ***");
+                Log.Info("*** Session Initilization STARTED ***");
                 MyAPIGateway.Utilities.MessageEntered += Utilities_MessageEntered;
 
                 ticksBetweenSpawns = SECONDS_BETWEEN_CYCLES * 60;
@@ -121,7 +125,7 @@ namespace Stollie.OreGenerator
                 Log.Info("Found " + gridsList.Count + " Grids");
                 Log.Info("Found " + oreGenerators.Count + " Ore Generators");
                 Log.Info("Found " + ORE_NAMES_AND_AMOUNTS.Count + " Ores in Config File ");
-                Log.Info("*** Session Initilization Complete ***");
+                Log.Info("*** Session Initilization ENDED ***");
                 Log.Info("");
             }
             catch (Exception e)
@@ -158,7 +162,18 @@ namespace Stollie.OreGenerator
                     
                     var cargoInventory = oreGenerator.SlimBlock.FatBlock.GetInventory();
                     var powerSink = oreGenerator.Components.Get<MyResourceSinkComponent>();
+                    var gridPowerDistributionGroup = (MyResourceDistributorComponent)oreGenerator.CubeGrid.ResourceDistributor;
+                    var gridPowerState = gridPowerDistributionGroup.ResourceStateByType(electricityId);
+
+                    //Log.Info("Grid Power State: " + gridPowerState);
+                    //Log.Info("Grid Max Power Output: " + gridPowerDistributionGroup.MaxAvailableResourceByType(electricityId));
+                    //Log.Info("Current Input: " + powerSink.CurrentInputByType(electricityId).ToString());
+                    //Log.Info("OreGenerator Power is " + POWER_REQUIRED + " Available?: " + powerSink.IsPowerAvailable(electricityId, POWER_REQUIRED));
                     
+
+                    if (gridPowerState != MyResourceStateEnum.Ok)
+                        continue;
+
                     if (oreGenerator.SlimBlock.FatBlock.IsWorking && oreGenerator.IsFunctional && powerSink != null &&
                         powerSink.IsPowerAvailable(electricityId, POWER_REQUIRED) &&
                         cargoInventory != null && !cargoInventory.IsFull && item != null && currentOreNames.Contains(oreName) && item.Amount > 0)
@@ -195,7 +210,7 @@ namespace Stollie.OreGenerator
                         if (distributor == null)
                             continue;
 
-                        float availableGridPower = distributor.MaxAvailableResourceByType(MyResourceDistributorComponent.ElectricityId);
+                        float availableGridPower = distributor.MaxAvailableResourceByType(electricityId);
 
                         var powerSink = oreGenerator.Components.Get<MyResourceSinkComponent>();
                         if (powerSink != null)
