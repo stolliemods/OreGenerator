@@ -9,7 +9,7 @@
          <DisplayName>Ore Generator</DisplayName>
          <Name>Ore_Generator</Name>
          <ItemIds>
-            <string>ConveyorSorter/SmallOreGenerator</string>			
+            <string>Collector/SmallOreGenerator</string>			
          </ItemIds>
       </Category>
   </CategoryClasses>

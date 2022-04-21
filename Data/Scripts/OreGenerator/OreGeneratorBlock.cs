@@ -16,7 +16,7 @@ using VRageMath;
 
 namespace Stollie.OreGenerator
 {
-    [MyEntityComponentDescriptor(typeof(MyObjectBuilder_ConveyorSorter), false, "SmallOreGenerator")]
+    [MyEntityComponentDescriptor(typeof(MyObjectBuilder_Collector), false, "SmallOreGenerator")]
     public class OreGeneratorBlock : MyGameLogicComponent
     {
         private IMyCubeBlock block = null;
@@ -143,16 +143,15 @@ namespace Stollie.OreGenerator
         {
             MyResourceDistributorComponent distributor = (MyResourceDistributorComponent)block.CubeGrid.ResourceDistributor;
             var gridPowerState = distributor.ResourceStateByType(electricityId);
-            var powerSink = Entity.Components.Get<MyResourceSinkComponent>();
             
             MyEntitySubpart oreInnerSubpart;
             block.TryGetSubpart("orb_inner", out oreInnerSubpart);
 
-            if (block.IsWorking) // && powerSink.IsPowerAvailable(electricityId, powerRequired))
+            if (block.IsWorking)
             {
                 oreInnerSubpart.SetEmissiveParts("Emissive_Clean", Color.Green, 1.0f);
             }
-            if (!block.IsWorking)// || !powerSink.IsPowerAvailable(electricityId, powerRequired))
+            if (!block.IsWorking)
             {
                 if (gridPowerState == VRage.MyResourceStateEnum.OverloadAdaptible || gridPowerState == VRage.MyResourceStateEnum.OverloadBlackout)
                     oreInnerSubpart.SetEmissiveParts("Emissive_Clean", Color.Yellow, 1.0f);
@@ -185,10 +184,10 @@ namespace Stollie.OreGenerator
 
                     var rotationMatrix = MatrixD.CreateRotationX(rotationX) * MatrixD.CreateRotationY(rotationY) * MatrixD.CreateRotationZ(rotationZ);
 
-                    if (animationMovementLoop <= 100)
+                    if (animationMovementLoop < 100)
                         scaleMatrix = MatrixD.CreateScale(0.9995);
 
-                    if (animationMovementLoop > 100)
+                    if (animationMovementLoop >= 100)
                         scaleMatrix = MatrixD.CreateScale(1.0005);
 
                     oreInnerSubpart.PositionComp.LocalMatrix = rotationMatrix * scaleMatrix * initialMatrix;
@@ -206,10 +205,10 @@ namespace Stollie.OreGenerator
 
                     var rotationMatrix = MatrixD.CreateRotationX(rotationX) * MatrixD.CreateRotationY(rotationY) * MatrixD.CreateRotationZ(rotationZ);
                     
-                    if (animationMovementLoop <= 100)
+                    if (animationMovementLoop < 100)
                         scaleMatrix = MatrixD.CreateScale(0.9994);
 
-                    if (animationMovementLoop > 100)
+                    if (animationMovementLoop >= 100)
                         scaleMatrix = MatrixD.CreateScale(1.0006);
 
                     //oreOuterSubpart.PositionComp.LocalMatrix = rotationMatrix * scaleMatrix * initialMatrix;

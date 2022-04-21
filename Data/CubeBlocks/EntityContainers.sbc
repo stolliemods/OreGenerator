@@ -3,7 +3,7 @@
     <EntityContainers>
         <Container>
             <Id>
-                <TypeId>ConveyorSorter</TypeId>
+                <TypeId>Collector</TypeId>
                 <SubtypeId>SmallOreGenerator</SubtypeId>
             </Id>
             <DefaultComponents>

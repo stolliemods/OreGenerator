@@ -20,7 +20,7 @@ namespace Stollie.OreGenerator
 
         public HashSet<IMyEntity> entityList = new HashSet<IMyEntity>();
         public HashSet<IMyCubeGrid> gridsList = new HashSet<IMyCubeGrid>();
-        public List<IMyConveyorSorter> oreGenerators = new List<IMyConveyorSorter>();
+        public List<IMyCollector> oreGenerators = new List<IMyCollector>();
         public OreGeneratorSettings oreGeneratorSettings;
         public float POWER_REQUIRED;
         public Dictionary<string, int> ORE_NAMES_AND_AMOUNTS = new Dictionary<string, int>();
@@ -110,7 +110,7 @@ namespace Stollie.OreGenerator
                     {
                         if (block.BlockDefinition.Id.SubtypeName == oreGeneratorSubtypeName)
                         {
-                            var blockAsCargoContainer = block.FatBlock as IMyConveyorSorter;
+                            var blockAsCargoContainer = block.FatBlock as IMyCollector;
                             oreGenerators.Add(blockAsCargoContainer);
                         }
                     }
@@ -242,7 +242,7 @@ namespace Stollie.OreGenerator
                     {
                         if (block.BlockDefinition.Id.SubtypeName == oreGeneratorSubtypeName)
                         {
-                            var oreGeneratorBlock = block.FatBlock as IMyConveyorSorter;
+                            var oreGeneratorBlock = block.FatBlock as IMyCollector;
                             oreGenerators.Add(oreGeneratorBlock);
                         }
                     }
@@ -284,7 +284,7 @@ namespace Stollie.OreGenerator
                 {
                     if (slimBlock.FatBlock.BlockDefinition.SubtypeName == oreGeneratorSubtypeName)
                     {
-                        var oreGenerator = slimBlock.FatBlock as IMyConveyorSorter;
+                        var oreGenerator = slimBlock.FatBlock as IMyCollector;
                         if (oreGenerator != null)
                         {
                             Log.Info("Added " + slimBlock.FatBlock.BlockDefinition.SubtypeName);
@@ -307,7 +307,7 @@ namespace Stollie.OreGenerator
                 {
                     if (slimBlock.FatBlock.BlockDefinition.SubtypeName == oreGeneratorSubtypeName)
                     {
-                        var oreGenerator = slimBlock.FatBlock as IMyConveyorSorter;
+                        var oreGenerator = slimBlock.FatBlock as IMyCollector;
                         oreGenerators.Remove(oreGenerator);
                     }
                 }

@@ -7,7 +7,7 @@
             <DisplayName>Ore Generator</DisplayName>
             <Description>Ore Generator</Description>
             <Blocks>
-                <Block Type="ConveyorSorter" Subtype="SmallOreGenerator" />                
+                <Block Type="Collector" Subtype="SmallOreGenerator" />                
             </Blocks>
         </BlockVariantGroup>       
     </BlockVariantGroups>
